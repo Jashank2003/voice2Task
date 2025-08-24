@@ -1,28 +1,37 @@
-import { useState } from "react";
-const TaskCard = ({ task }) => {
+  import { useState } from "react";
+  import {  Trash2 } from 'lucide-react';
+  const TaskCard = ({ task ,onDelete  }) => {
 
-    const [isChecked,setIsChecked] = useState(false);
+      const [isChecked,setIsChecked] = useState(false);
 
 
-  return (
-    <div className=" min-h-20 p-4 bg-zinc-900 rounded-xl border border-gray-700 flex items-center gap-3 shadow-md hover:shadow-lg transition-shadow duration-300">
-      <label className="inline-flex items-center cursor-pointer group">
-        <input
-          type="checkbox"
-          checked={isChecked}
-          onChange={() => setIsChecked(!isChecked)}
-          className="mr-3 w-5 h-5 accent-green-300 cursor-pointer"
-        />
-      </label>
-      <div
-        className={` transition-all duration-200 ${
-          isChecked ? "line-through" : ""
-        } ${isChecked ? "text-gray-500" : "text-white"}`}
+    return (
+      <div className=" min-h-20 p-4 bg-zinc-900 rounded-xl border border-gray-700 flex items-center gap-3 shadow-md hover:shadow-lg transition-shadow duration-300">
+        <label className="inline-flex items-center cursor-pointer group">
+          <input
+            type="checkbox"
+            checked={isChecked}
+            onChange={() => setIsChecked(!isChecked)}
+            className="mr-3 w-5 h-5 accent-green-300 cursor-pointer"
+          />
+        </label>
+        <div
+          className={` transition-all duration-200 ${
+            isChecked ? "line-through" : ""
+          } ${isChecked ? "text-gray-500" : "text-white"}`}
+        >
+          {task}
+        </div>
+
+        <button
+        onClick={onDelete}
+        className="text-red-400 hover:text-red-600 transition my-auto cursor-pointer"
       >
-        {task}
-      </div>
-    </div>
-  );
-};
+         <Trash2  size={18}/>
+      </button>
 
-export default TaskCard;
+      </div>
+    );
+  };
+
+  export default TaskCard;

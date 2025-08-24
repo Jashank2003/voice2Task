@@ -1,5 +1,5 @@
 import AudioRecorder from "./components/AudioRecorder";
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import TaskCard from "./components/TaskCard";
 import 'ldrs/react/DotStream.css'
 import { DotStream } from "ldrs/react";
@@ -7,10 +7,36 @@ import { DotStream } from "ldrs/react";
 
 function App() {
 
-  const [transcriptedText, setTranscriptedText] = useState("");
-  const [transcriptedTasks, setTranscriptedTasks] = useState(["Tap & record your to-dos in a casual tone and get them tailored for you.",]); 
+  const [myTasks, setMyTasks] = useState(() => {
+  const saved = localStorage.getItem("myTasks");
+  let parsed = [];
 
+  try {
+    parsed = saved ? JSON.parse(saved) : [];
+  } catch {
+    parsed = [];
+  }
+
+  // Remove null/empty tasks
+  const cleaned = parsed.filter(task => task && task.trim() !== "");
+
+  // If nothing left → fallback task
+  return cleaned.length > 0 
+    ? cleaned 
+    : ["Tap & record your to-dos in a casual tone and get them tailored for you."];
+});
+
+  const [transcriptedText, setTranscriptedText] = useState("");
+  const [transcriptedTasks, setTranscriptedTasks] =  useState([]); 
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+  localStorage.setItem("myTasks", JSON.stringify(myTasks));
+}, [myTasks]);
+
+  const handleDeleteTask = (index) => {
+  setMyTasks((prev) => prev.filter((_, i) => i !== index));
+};     
 
   const handleRecordingComplete = async(blob) => {
     console.log("Recording complete:", blob);
@@ -33,6 +59,12 @@ function App() {
       
       setTranscriptedTasks(result.tasks);
       console.log("Transcripted tasks:", result.tasks);
+
+      setMyTasks(prev => [
+  ...prev,
+  ...result.tasks.filter(task => task && task.trim() !== "")
+]);
+     
 
     }
     catch(error){
@@ -61,8 +93,8 @@ function App() {
     {/* Scrollable Task Container */}
     <div className="flex-1 w-full flex justify-center mt-6 px-1 overflow-y-auto">
       <div className="w-full sm:w-[60%] space-y-2 pb-32">
-        {transcriptedTasks.map((task, index) => (
-          <TaskCard key={index} task={task} />
+        {myTasks.map((task, index) => (
+          <TaskCard key={index} task={task} onDelete={() => handleDeleteTask(index)}  />
         ))}
       </div>
     </div>

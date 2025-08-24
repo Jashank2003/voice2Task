@@ -18,7 +18,7 @@ UPLOAD_FOLDER = "uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# -------Hugging face tokens and fun. to transcibe -->
+# -------Hugging face tokens and func. to transcibe -->
 
 def transcribe_with_whisper(audio_path):
     API_URL = "https://router.huggingface.co/hf-inference/models/openai/whisper-large-v3"
